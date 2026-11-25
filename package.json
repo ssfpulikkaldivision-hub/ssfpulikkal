@@ -10,8 +10,7 @@
     "deploy": "opennextjs-cloudflare deploy",
     "start": "next start",
     "lint": "next lint",
-    "seed": "tsx prisma/seed.ts",
-
+    "seed": "tsx prisma/seed.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
