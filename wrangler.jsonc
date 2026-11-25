@@ -1,0 +1,24 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "ssf-pulikkal-division",
+  "account_id": "90c6e667d711014e240e35c59a3258dd",
+  "main": ".open-next/worker.js",
+  "compatibility_date": "2024-11-20",
+  "compatibility_flags": [
+    "nodejs_compat"
+  ],
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS"
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "division-project26",
+      "database_id": "c5d7b195-4ef0-46b1-aefc-2ad786f4232c"
+    }
+  ],
+  "observability": {
+    "enabled": true
+  }
+}
