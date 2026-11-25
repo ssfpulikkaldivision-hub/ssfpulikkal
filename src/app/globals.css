@@ -1,0 +1,200 @@
+@import url('https://fonts.googleapis.com/css2?family=Anek+Malayalam:wght@300;400;500;600;700;800&display=swap');
+@import "tailwindcss";
+
+@font-face {
+  font-family: 'Cooper Black';
+  src: url('/fonts/CooperBlack.ttf') format('truetype');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Anek Malayalam';
+  src: url('/fonts/AnekMalayalam.ttf') format('truetype');
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@theme {
+  --color-primary: #059669;
+  /* Emerald 600 - slightly more sophisticated */
+  --color-primary-dark: #064e3b;
+  --color-secondary: #0d9488;
+  --font-sans: var(--font-anek-malayalam), "Anek Malayalam", var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-anek-malayalam), "Anek Malayalam", var(--font-outfit), ui-sans-serif, system-ui, sans-serif;
+  --font-malayalam: var(--font-anek-malayalam), "Anek Malayalam", sans-serif;
+  --font-ssf: var(--font-cooper-black), "Cooper Black", serif;
+}
+
+.ssf-font {
+  font-family: var(--font-cooper-black), "Cooper Black", serif;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+}
+
+.font-malayalam {
+  font-family: var(--font-malayalam);
+  letter-spacing: normal !important;
+}
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 220 20% 10%;
+    --primary: 161 94% 30%;
+    --secondary: 161 94% 40%;
+    --border: 220 15% 94%;
+    --radius: 0.5rem;
+  }
+}
+
+@layer base {
+  * {
+    border-color: var(--border);
+  }
+
+  body {
+    background-color: white;
+    color: var(--foreground);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    /* Medium weight for modern look */
+    letter-spacing: -0.02em;
+  }
+
+  h1.font-malayalam,
+  h2.font-malayalam,
+  h3.font-malayalam,
+  h4.font-malayalam,
+  h5.font-malayalam,
+  h6.font-malayalam,
+  .font-malayalam h1,
+  .font-malayalam h2,
+  .font-malayalam h3,
+  .font-malayalam h4,
+  .font-malayalam h5,
+  .font-malayalam h6 {
+    letter-spacing: normal !important;
+  }
+}
+
+/* Rich news article typography */
+.news-content {
+  font-family: var(--font-malayalam);
+  color: #1f2937;
+  font-size: 1.15rem;
+  line-height: 2.1;
+  letter-spacing: normal !important;
+  text-align: left !important;
+  word-break: normal;
+  overflow-wrap: break-word;
+}
+
+.news-content p {
+  margin-bottom: 1.5rem;
+  line-height: 2.1;
+  text-align: left !important;
+}
+
+.news-content p:last-child {
+  margin-bottom: 0;
+}
+
+.news-content strong,
+.news-content b {
+  font-weight: 700;
+  color: #111827;
+}
+
+.news-content h1,
+.news-content h2,
+.news-content h3,
+.news-content h4 {
+  font-family: var(--font-malayalam);
+  font-weight: 700;
+  color: #111827;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  line-height: 1.4;
+  letter-spacing: normal !important;
+}
+
+.news-content h2 {
+  font-size: 1.65rem;
+}
+
+.news-content h3 {
+  font-size: 1.4rem;
+}
+
+.news-content blockquote {
+  border-left: 4px solid var(--color-primary);
+  padding-left: 1.25rem;
+  margin: 1.75rem 0;
+  font-style: italic;
+  color: #374151;
+}
+
+.news-content ul,
+.news-content ol {
+  margin: 1.25rem 0;
+  padding-left: 1.5rem;
+}
+
+.news-content ul {
+  list-style-type: disc;
+}
+
+.news-content ol {
+  list-style-type: decimal;
+}
+
+.news-content li {
+  margin-bottom: 0.5rem;
+}
+
+.news-content img {
+  border-radius: 1rem;
+  margin: 2rem auto;
+  max-width: 100%;
+  height: auto;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+}
+
+.shadow-premium {
+  box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  /* Very subtle */
+}
+
+.card-hover {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card-hover:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px -5px rgb(0 0 0 / 0.05);
+}
+
+.btn-primary {
+  @apply bg-primary text-white px-8 py-3 rounded-full font-medium transition-all hover:bg-primary-dark active:scale-[0.98];
+}
+
+.btn-secondary {
+  @apply bg-white text-gray-900 border border-gray-200 px-8 py-3 rounded-full font-medium transition-all hover:bg-gray-50 active:scale-[0.98];
+}
+
+.nav-link {
+  @apply text-gray-500 hover:text-black font-medium transition-colors;
+}
