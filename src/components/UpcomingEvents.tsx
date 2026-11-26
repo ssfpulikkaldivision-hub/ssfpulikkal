@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
 import { Calendar, MapPin, ArrowRight, Clock } from "lucide-react";
 
@@ -19,31 +19,34 @@ interface UpcomingEventsProps {
     events: Event[];
 }
 
+function findNearestEvent(events: Event[]): Event | null {
+    if (!events.length) return null;
+    const now = Date.now();
+    let nearest = events[0];
+    let minDiff = Infinity;
+    for (const e of events) {
+        const t = Date.parse(e.date);
+        if (!isNaN(t)) {
+            const diff = t - now;
+            if (diff > 0 && diff < minDiff) {
+                minDiff = diff;
+                nearest = e;
+            }
+        }
+    }
+    return nearest;
+}
+
 export function UpcomingEvents({ events }: UpcomingEventsProps) {
     const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
-    const [targetEvent, setTargetEvent] = useState<Event | null>(null);
+
+    // Compute synchronously from props — no useState/useEffect needed for targetEvent
+    const targetEvent = useMemo(() => findNearestEvent(events), [events]);
 
     useEffect(() => {
-        if (events.length === 0) return;
+        if (!targetEvent) return;
 
-        let nearestEvent = events[0];
-        let minDiff = Infinity;
-        const now = new Date().getTime();
-
-        events.forEach((e) => {
-            const parsedDate = Date.parse(e.date);
-            if (!isNaN(parsedDate)) {
-                const diff = parsedDate - now;
-                if (diff > 0 && diff < minDiff) {
-                    minDiff = diff;
-                    nearestEvent = e;
-                }
-            }
-        });
-
-        setTargetEvent(nearestEvent);
-
-        const targetTime = Date.parse(nearestEvent.date);
+        const targetTime = Date.parse(targetEvent.date);
         if (isNaN(targetTime)) return;
 
         const updateTimer = () => {
@@ -66,7 +69,7 @@ export function UpcomingEvents({ events }: UpcomingEventsProps) {
         updateTimer();
         const interval = setInterval(updateTimer, 1000);
         return () => clearInterval(interval);
-    }, [events]);
+    }, [targetEvent]);
 
     return (
         <section className="py-24 bg-black text-white relative overflow-hidden">

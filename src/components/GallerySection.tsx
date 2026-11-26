@@ -66,6 +66,10 @@ export function GallerySection({ images }: GallerySectionProps) {
                                     src={img.image}
                                     alt={img.title || "Gallery Image"}
                                     className="w-full h-full object-cover grayscale transition-all duration-700 group-hover:grayscale-0 group-hover:scale-105"
+                                    onError={(e) => {
+                                        const target = e.currentTarget;
+                                        target.style.display = "none";
+                                    }}
                                 />
                                 <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-5 text-left">
                                     {img.event && <span className="text-white/60 text-[9px] uppercase tracking-widest font-bold mb-1">{img.event}</span>}

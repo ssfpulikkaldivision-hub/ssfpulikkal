@@ -18,6 +18,10 @@
       "database_id": "c5d7b195-4ef0-46b1-aefc-2ad786f4232c"
     }
   ],
+  "vars": {
+    "NEXTAUTH_URL": "https://ssfpulikkaldivision.online",
+    "NEXTAUTH_SECRET": "ssf-pulikkal-division-nextauth-secret-2026"
+  },
   "observability": {
     "enabled": true
   }
