@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Head from "next/head";
 import { usePathname, useRouter } from "next/navigation";
 import { PortalSidebar } from "@/components/portal/PortalSidebar";
 import { Loader2 } from "lucide-react";
@@ -18,20 +17,6 @@ interface EntitySession {
 }
 
 export default function PortalLayout({ children }: { children: React.ReactNode }) {
-  return (
-    <>
-      <Head>
-        <title>SSF Pulikkal Division Portal</title>
-        <meta property="og:title" content="SSF Pulikkal Division Portal" />
-        <meta property="og:description" content="Division portal for SSF Pulikkal" />
-        <meta property="og:image" content="/portal-share.png" />
-        <meta property="og:url" content="https://your-subdomain.example.com" />
-        <meta name="twitter:card" content="summary_large_image" />
-      </Head>
-      {children}
-    </>
-  );
-}
     const pathname = usePathname();
     const router = useRouter();
     const [session, setSession] = useState<EntitySession | null>(null);
