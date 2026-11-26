@@ -1,6 +1,5 @@
 "use client";
 
-import { motion } from "framer-motion";
 import { formatSSF } from "@/lib/ssf-formatter";
 
 export function AboutSection() {
@@ -13,12 +12,7 @@ export function AboutSection() {
                         <h3 className="text-5xl md:text-6xl font-display font-medium text-black leading-tight">About {formatSSF("SSF")}</h3>
                     </div>
                     <div className="lg:col-span-8 lg:pt-14">
-                        <motion.div
-                            initial={{ opacity: 0, y: 20 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.6 }}
-                            viewport={{ once: true }}
-                        >
+                        <div>
                             <p className="text-base md:text-lg text-gray-600 leading-relaxed mb-6">
                                 {formatSSF("SSF is a movement founded in 1973 with the mission of purposefully channeling the active potential of creative studenthood and integrating it into the process of nation-building. Samastha Kerala Jamiyyathul Ulama established its student wing to bring about a moral awakening within student discourse and to cultivate a mature, organic environment for students to engage socially, culturally, and intellectually.")}
                             </p>
@@ -28,7 +22,7 @@ export function AboutSection() {
                             <p className="text-base md:text-lg text-gray-600 leading-relaxed">
                                 {formatSSF("SSF possesses a robust cadre system and organizational structure operating across national, state, district, division, sector, unit, and block levels. Overcoming social insecurities such as apoliticism, communalism, and extremism, the movement manifests the true beauty of Islam rooted in the fundamental principles of compassion for fellow beings, friendship, and tolerance. Speaking in the language of moderation and hope, SSF keeps humane thoughts alive and vibrant.")}
                             </p>
-                        </motion.div>
+                        </div>
                     </div>
                 </div>
             </div>

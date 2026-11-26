@@ -56,13 +56,9 @@ export function GallerySection({ images }: GallerySectionProps) {
 
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                     {filteredImages.length > 0 ? (
-                        filteredImages.map((img, index) => (
-                            <motion.div
+                        filteredImages.map((img) => (
+                            <div
                                 key={img.id}
-                                initial={{ opacity: 0, y: 10 }}
-                                whileInView={{ opacity: 1, y: 0 }}
-                                transition={{ duration: 0.5, delay: index * 0.05 }}
-                                viewport={{ once: true }}
                                 className="relative aspect-square cursor-pointer overflow-hidden bg-gray-100 group"
                                 onClick={() => setSelectedImage(img.image)}
                             >
@@ -75,7 +71,7 @@ export function GallerySection({ images }: GallerySectionProps) {
                                     {img.event && <span className="text-white/60 text-[9px] uppercase tracking-widest font-bold mb-1">{img.event}</span>}
                                     {img.title && <p className="text-white text-sm font-medium line-clamp-2">{img.title}</p>}
                                 </div>
-                            </motion.div>
+                            </div>
                         ))
                     ) : (
                         <div className="col-span-full text-left py-10 text-gray-400 font-light italic">

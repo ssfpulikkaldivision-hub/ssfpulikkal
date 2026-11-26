@@ -1,6 +1,5 @@
 "use client";
 
-import { motion } from "framer-motion";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { useState, useEffect } from "react";
@@ -41,13 +40,9 @@ export function NewsSection({ news }: NewsSectionProps) {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-16">
                     {news.length > 0 ? (
-                        news.map((item, index) => (
-                            <motion.div
+                        news.map((item) => (
+                            <div
                                 key={item.id}
-                                initial={{ opacity: 0, y: 15 }}
-                                whileInView={{ opacity: 1, y: 0 }}
-                                transition={{ duration: 0.5, delay: index * 0.1 }}
-                                viewport={{ once: true }}
                                 className="group cursor-pointer"
                             >
                                 <Link href={`/news/${item.slug}`} className="block space-y-8">
@@ -76,7 +71,7 @@ export function NewsSection({ news }: NewsSectionProps) {
                                         </p>
                                     </div>
                                 </Link>
-                            </motion.div>
+                            </div>
                         ))
                     ) : (
                         <div className="col-span-full py-20 border-t border-gray-100 text-gray-400 font-light italic">
