@@ -62,15 +62,6 @@ const PRESET_CAMPAIGNS = [
         description: "Enables Sectors and Units to record orders, collections, and delivery status directly.",
     },
     {
-        title: "Sahithyotsav 2026",
-        slug: "sahithyotsav",
-        path: "/portal/sahithyotsav",
-        adminPath: "/admin/sahithyotsav",
-        category: "Sahithyotsav",
-        icon: "Trophy",
-        description: "Unit-level arts and literary fest reporting, participants, and results declaration.",
-    },
-    {
         title: "Ramadan Relief Drive",
         slug: "ramadan-relief",
         path: "/portal/campaigns/ramadan-relief",
@@ -479,7 +470,7 @@ export default function AdminCampaignsPage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
                     {filteredCampaigns.map((camp) => {
                         const portalHref = camp.attachmentUrl || (camp.slug.includes("payasam") ? "/portal/payasam-challenge" : `/portal/campaigns/${camp.id}`);
-                        const adminHref = camp.slug.includes("payasam") ? "/admin/payasam-challenge" : (camp.slug.includes("sahithyotsav") ? "/admin/sahithyotsav" : `/admin/campaigns`);
+                        const adminHref = camp.slug.includes("payasam") ? "/admin/payasam-challenge" : `/admin/campaigns`;
                         const isActionLoading = actionLoadingId === camp.id;
 
                         return (

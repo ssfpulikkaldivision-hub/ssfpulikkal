@@ -130,7 +130,6 @@ export async function POST(request: NextRequest) {
 
             revalidatePath("/", "layout");
             revalidatePath("/gallery");
-            revalidatePath("/sahithyotsav/gallery");
 
             return NextResponse.json({ success: true, count: insertedCount });
         }
@@ -173,7 +172,6 @@ export async function POST(request: NextRequest) {
             if (resolved.slug) {
                 revalidatePath(`/gallery/${resolved.slug}`);
             }
-            revalidatePath("/sahithyotsav/gallery");
 
             return NextResponse.json({ success: true, count: insertedCount });
         }
@@ -209,7 +207,6 @@ export async function POST(request: NextRequest) {
         if (resolved.slug) {
             revalidatePath(`/gallery/${resolved.slug}`);
         }
-        revalidatePath("/sahithyotsav/gallery");
 
         return NextResponse.json(item);
     } catch (error) {
@@ -235,7 +232,6 @@ export async function DELETE(request: NextRequest) {
 
         revalidatePath("/", "layout");
         revalidatePath("/gallery");
-        revalidatePath("/sahithyotsav/gallery");
 
         return NextResponse.json({ success: true, count: deleted.count });
     } catch (error) {

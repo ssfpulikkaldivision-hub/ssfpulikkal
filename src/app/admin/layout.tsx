@@ -57,7 +57,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         { name: "Campaigns & Portal", href: "/admin/campaigns", icon: <Layers size={18} /> },
         { name: "Students Council", href: "/admin/councillors", icon: <Ticket size={18} /> },
         { name: "Gallery", href: "/admin/gallery", icon: <ImageIcon size={18} /> },
-        { name: "Sahithyotsav", href: "/admin/sahithyotsav", icon: <BookOpen size={18} /> },
         { name: "Section Editor", href: "/admin/settings", icon: <Settings size={18} /> },
     ];
 

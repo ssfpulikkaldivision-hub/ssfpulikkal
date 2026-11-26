@@ -185,7 +185,6 @@ export default function SettingsPage() {
                         { name: "Home", href: "/", hidden: false },
                         { name: "Events", href: "/events", hidden: false },
                         { name: "News", href: "/#news", hidden: false },
-                        { name: "Sahithyotsav", href: "/sahithyotsav", hidden: false },
                         { name: "Gallery", href: "/gallery", hidden: false },
                         { name: "Contact", href: "/#contact", hidden: false },
                     ];
@@ -851,7 +850,7 @@ export default function SettingsPage() {
                                                 <input
                                                     type="text"
                                                     className={cn(inputClass, "bg-white py-2 text-xs font-mono")}
-                                                    placeholder="e.g. /sahithyotsav, /admin"
+                                                    placeholder="e.g. /events, /admin"
                                                     value={btn.link}
                                                     onChange={(e) => handleUpdateCtaButton(index, "link", e.target.value)}
                                                     required
@@ -893,7 +892,7 @@ export default function SettingsPage() {
                                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-gray-100 pb-3">
                                     <div>
                                         <h4 className="text-sm font-bold uppercase tracking-wider text-black">Navigation Menu Links</h4>
-                                        <p className="text-xs text-gray-400">Add or reorder links in the main navigation bar (Home, Events, News, Sahithyotsav, Gallery, Contact)</p>
+                                        <p className="text-xs text-gray-400">Add or reorder links in the main navigation bar (Home, Events, News, Gallery, Contact)</p>
                                     </div>
                                     <button
                                         type="button"

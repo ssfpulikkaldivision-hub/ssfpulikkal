@@ -157,39 +157,6 @@ model Hero {
   showBtn2     Boolean? @default(true)
 }
 
-model LitFestResult {
-  id         String   @id @default(cuid())
-  itemName   String
-  category   String
-  winnerName String
-  unitName   String
-  position   Int
-  points     Int
-  createdAt  DateTime @default(now())
-}
-
-model LitFestSession {
-  id        String   @id @default(cuid())
-  itemName  String
-  category  String
-  stage     String
-  time      String
-  status    String
-  createdAt DateTime @default(now())
-}
-
-model LitFestSettings {
-  id            String   @id @default("litfest-settings")
-  title         String   @default("Pulikkal Division Sahithyotsav 2026")
-  subtitle      String   @default("The Ultimate Cultural & Literary Festival")
-  dates         String   @default("August 15, 16, 17")
-  venue         String   @default("Pulikkal, Malappuram")
-  mapLink       String   @default("https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15659.458316109968!2d75.9126938!3d11.1235123!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ba64e43f49352e7%3A0xc3f98229f34f71a0!2sPulikkal%2C%20Kerala!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin")
-  brochureUrl   String   @default("")
-  registerUrl   String   @default("")
-  countdownDate DateTime @default(now())
-}
-
 model Navbar {
   id         String  @id @default("navbar-settings")
   logoText   String

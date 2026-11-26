@@ -51,7 +51,6 @@ export async function PUT(request: NextRequest) {
         revalidatePath("/events");
         revalidatePath("/gallery");
         revalidatePath("/news");
-        revalidatePath("/sahithyotsav");
 
         return NextResponse.json(result);
     } catch (error) {

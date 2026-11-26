@@ -27,7 +27,6 @@ export function Navbar({ data }: { data?: NavbarData }) {
         { name: "Home", href: "/" },
         { name: "Events", href: "/events" },
         { name: "News", href: "/#news" },
-        { name: "Sahithyotsav", href: "/sahithyotsav" },
         { name: "Gallery", href: "/gallery" },
         { name: "Contact", href: "/#contact" },
     ];
