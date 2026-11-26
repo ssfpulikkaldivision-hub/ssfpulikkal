@@ -66,10 +66,10 @@ model CampaignSubmission {
 
 model Contact {
   id       String @id @default("contact-info")
-  address  String
+  address  String @db.Text
   phone    String
   email    String
-  mapEmbed String
+  mapEmbed String @db.LongText
 }
 
 model Councillor {
@@ -114,10 +114,10 @@ model Event {
 
 model Footer {
   id          String  @id @default("footer-content")
-  aboutText   String
-  socialLinks String
+  aboutText   String  @db.Text
+  socialLinks String  @db.LongText
   copyright   String
-  links       String?
+  links       String? @db.LongText
 }
 
 model Gallery {
@@ -153,14 +153,14 @@ model GalleryAlbum {
 
 model Hero {
   id           String   @id @default("hero-section")
-  bannerImage  String
+  bannerImage  String   @db.LongText
   title        String
-  subtitle     String
+  subtitle     String   @db.Text
   btn1Text     String
   btn1Link     String
   btn2Text     String
   btn2Link     String
-  bannerImages String?
+  bannerImages String?  @db.LongText
   showBtn1     Boolean? @default(true)
   showBtn2     Boolean? @default(true)
 }
@@ -168,10 +168,10 @@ model Hero {
 model Navbar {
   id         String  @id @default("navbar-settings")
   logoText   String
-  links      String
+  links      String  @db.LongText
   loginText  String
   loginLink  String
-  ctaButtons String?
+  ctaButtons String? @db.LongText
 }
 
 model News {

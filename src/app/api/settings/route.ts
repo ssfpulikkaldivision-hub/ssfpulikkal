@@ -55,6 +55,7 @@ export async function PUT(request: NextRequest) {
         return NextResponse.json(result);
     } catch (error) {
         console.error("Settings update error:", error);
-        return NextResponse.json({ error: "Failed to update settings" }, { status: 500 });
+        const message = error instanceof Error ? error.message : "Failed to update settings";
+        return NextResponse.json({ error: message }, { status: 500 });
     }
 }
