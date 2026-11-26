@@ -56,13 +56,33 @@ export function PortalSidebar({ session }: PortalSidebarProps) {
 
     useEffect(() => {
         let isMounted = true;
+        const CACHE_KEY = `portal_campaigns_${session.id}`;
+        const CACHE_TTL = 60 * 1000; // 60 seconds
+
+        try {
+            const cached = sessionStorage.getItem(CACHE_KEY);
+            if (cached) {
+                const { data, timestamp } = JSON.parse(cached);
+                if (Date.now() - timestamp < CACHE_TTL && Array.isArray(data)) {
+                    setCampaigns(data);
+                    return;
+                }
+            }
+        } catch {
+            // Ignore sessionStorage errors
+        }
+
         async function fetchActiveCampaigns() {
             try {
                 const res = await fetch("/api/portal/campaigns");
                 if (res.ok) {
                     const data = await res.json();
                     if (isMounted && Array.isArray(data.campaigns)) {
-                        setCampaigns(data.campaigns.filter((c: PortalCampaignItem) => c.status === "ACTIVE"));
+                        const active = data.campaigns.filter((c: PortalCampaignItem) => c.status === "ACTIVE");
+                        setCampaigns(active);
+                        try {
+                            sessionStorage.setItem(CACHE_KEY, JSON.stringify({ data: active, timestamp: Date.now() }));
+                        } catch {}
                     }
                 }
             } catch {
@@ -73,7 +93,7 @@ export function PortalSidebar({ session }: PortalSidebarProps) {
         return () => {
             isMounted = false;
         };
-    }, []);
+    }, [session.id]);
 
     const handleLogout = async () => {
         setIsLoggingOut(true);
