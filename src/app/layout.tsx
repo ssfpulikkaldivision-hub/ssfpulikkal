@@ -20,7 +20,7 @@ const cooperBlack = localFont({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://ssfpulikkaldivision.online"),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://ssfpulikkal.vercel.app"),
   title: "SSF Pulikkal Division",
   description: "Official website of SSF Pulikkal Division. Empowering the society through moral excellence.",
   icons: {
@@ -31,7 +31,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "SSF Pulikkal Division",
     description: "Official website of SSF Pulikkal Division. Empowering the society through moral excellence.",
-    url: "https://ssfpulikkaldivision.online",
+    url: process.env.NEXT_PUBLIC_SITE_URL || "https://ssfpulikkal.vercel.app",
     siteName: "SSF Pulikkal Division",
     images: [
       {
