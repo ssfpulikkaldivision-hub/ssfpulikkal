@@ -57,12 +57,23 @@ export default async function NewsListPage() {
                             {news.map((item) => (
                                 <div key={item.id} className="group cursor-pointer">
                                     <Link href={`/news/${item.slug}`} className="block space-y-8">
-                                        <div className="relative aspect-[16/10] overflow-hidden bg-gray-100">
-                                            <img
-                                                src={item.image}
-                                                alt={item.title}
-                                                className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
-                                            />
+                                        <div className="relative aspect-[16/10] overflow-hidden bg-gray-100 flex items-center justify-center">
+                                            {item.image && !item.image.startsWith("/uploads/") ? (
+                                                <img
+                                                    src={item.image}
+                                                    alt={item.title}
+                                                    className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
+                                                />
+                                            ) : (
+                                                <div className="flex flex-col items-center justify-center gap-2 text-gray-300">
+                                                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                                                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                                                        <circle cx="8.5" cy="8.5" r="1.5"/>
+                                                        <polyline points="21 15 16 10 5 21"/>
+                                                    </svg>
+                                                    <span className="text-xs text-gray-300 font-light">No image</span>
+                                                </div>
+                                            )}
                                         </div>
                                         <div className="space-y-4">
                                             <div className="text-xs font-bold uppercase tracking-widest text-gray-400">

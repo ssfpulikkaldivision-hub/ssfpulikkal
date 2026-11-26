@@ -47,7 +47,7 @@ export function NewsSection({ news }: NewsSectionProps) {
                             >
                                 <Link href={`/news/${item.slug}`} className="block space-y-8">
                                     <div className="relative aspect-[16/10] overflow-hidden bg-gray-100 flex items-center justify-center">
-                                        {item.image ? (
+                                        {item.image && !item.image.startsWith("/uploads/") ? (
                                             <img
                                                 src={item.image}
                                                 alt={item.title}
@@ -62,7 +62,7 @@ export function NewsSection({ news }: NewsSectionProps) {
                                         ) : null}
                                         <div
                                             className="absolute inset-0 bg-gray-100 flex flex-col items-center justify-center gap-2 text-gray-300"
-                                            style={{ display: item.image ? "none" : "flex" }}
+                                            style={{ display: item.image && !item.image.startsWith("/uploads/") ? "none" : "flex" }}
                                         >
                                             <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
                                                 <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
