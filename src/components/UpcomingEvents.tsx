@@ -19,13 +19,27 @@ interface UpcomingEventsProps {
     events: Event[];
 }
 
+function parseEventTimestamp(dateStr: string): number {
+    if (!dateStr) return NaN;
+    const trimmed = dateStr.trim();
+    // If YYYY-MM-DD without time/timezone, parse as IST (+05:30)
+    if (/^\d{4}-\d{2}-\d{2}$/.test(trimmed)) {
+        return Date.parse(`${trimmed}T00:00:00+05:30`);
+    }
+    // If ISO datetime without timezone offset, append +05:30
+    if (/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(:\d{2})?$/.test(trimmed)) {
+        return Date.parse(`${trimmed}+05:30`);
+    }
+    return Date.parse(trimmed);
+}
+
 function findNearestEvent(events: Event[]): Event | null {
     if (!events.length) return null;
     const now = Date.now();
     let nearest = events[0];
     let minDiff = Infinity;
     for (const e of events) {
-        const t = Date.parse(e.date);
+        const t = parseEventTimestamp(e.date);
         if (!isNaN(t)) {
             const diff = t - now;
             if (diff > 0 && diff < minDiff) {
@@ -46,7 +60,7 @@ export function UpcomingEvents({ events }: UpcomingEventsProps) {
     useEffect(() => {
         if (!targetEvent) return;
 
-        const targetTime = Date.parse(targetEvent.date);
+        const targetTime = parseEventTimestamp(targetEvent.date);
         if (isNaN(targetTime)) return;
 
         const updateTimer = () => {

@@ -25,6 +25,11 @@ export function PortalLayoutClient({ children }: { children: React.ReactNode }) 
     const isLoginPage = pathname === "/portal/login";
 
     useEffect(() => {
+        if (isLoginPage) {
+            setLoading(false);
+            return;
+        }
+
         let isMounted = true;
         async function checkAuth() {
             try {
