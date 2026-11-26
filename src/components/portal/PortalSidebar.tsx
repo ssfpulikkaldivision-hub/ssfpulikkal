@@ -172,38 +172,17 @@ export function PortalSidebar({ session }: PortalSidebarProps) {
                     </div>
                 </Link>
 
-                {/* Payasam Challenge */}
-                <Link
-                    href="/portal/payasam-challenge"
-                    onClick={() => setIsMobileOpen(false)}
-                    className={cn(
-                        "flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all group",
-                        isActive("/portal/payasam-challenge")
-                            ? "bg-[#ebf6ee] text-[#1b7a42] font-semibold shadow-2xs"
-                            : "text-gray-600 hover:text-gray-950 hover:bg-gray-50"
-                    )}
-                >
-                    <div className="flex items-center gap-3">
-                        <span className={cn(isActive("/portal/payasam-challenge") ? "text-[#1b7a42]" : "text-amber-600")}>
-                            <Droplets size={19} />
-                        </span>
-                        <span>Payasam Challenge</span>
-                    </div>
-                </Link>
-
                 {/* Dynamic Campaigns Section (Items added by Admin for this Sector/Unit) */}
-                {campaigns.filter((c) => getCampaignHref(c) !== "/portal/payasam-challenge").length > 0 && (
+                {campaigns.length > 0 && (
                     <div className="pt-3 pb-1">
                         <div className="px-3.5 pb-2 text-[10px] font-bold uppercase tracking-wider text-gray-400 flex items-center justify-between">
                             <span>Modules</span>
                             <span className="text-[9px] bg-emerald-50 text-emerald-700 px-1.5 py-0.2 rounded-full font-bold">
-                                {campaigns.filter((c) => getCampaignHref(c) !== "/portal/payasam-challenge").length}
+                                {campaigns.length}
                             </span>
                         </div>
                         <div className="space-y-1">
-                            {campaigns
-                                .filter((c) => getCampaignHref(c) !== "/portal/payasam-challenge")
-                                .map((camp) => {
+                            {campaigns.map((camp) => {
                                 const href = getCampaignHref(camp);
                                 const active = isActive(href);
                                 return (
