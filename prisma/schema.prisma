@@ -1,0 +1,299 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Admin {
+  id       String @id @default(cuid())
+  username String @unique
+  password String
+}
+
+model Campaign {
+  id             String               @id @default(cuid())
+  title          String
+  slug           String               @unique
+  description    String
+  category       String               @default("GENERAL")
+  targetAudience String               @default("ALL")
+  startDate      DateTime?
+  endDate        DateTime?
+  status         String               @default("ACTIVE")
+  bannerImage    String?
+  attachmentUrl  String?
+  formFields     String?
+  targetValue    Float?
+  targetUnit     String?
+  createdAt      DateTime             @default(now())
+  updatedAt      DateTime             @updatedAt
+  submissions    CampaignSubmission[]
+
+  @@index([category])
+  @@index([status])
+}
+
+model CampaignSubmission {
+  id              String   @id @default(cuid())
+  campaignId      String
+  entityType      String
+  entityId        String
+  entityName      String
+  sectorId        String?
+  sectorName      String?
+  unitId          String?
+  unitName        String?
+  submittedBy     String?
+  submittedMobile String?
+  values          String
+  numericValue    Float?
+  status          String   @default("SUBMITTED")
+  remarks         String?
+  attachments     String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  campaign        Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+
+  @@unique([campaignId, entityType, entityId])
+  @@index([status])
+  @@index([entityId])
+  @@index([sectorId])
+  @@index([campaignId])
+}
+
+model Contact {
+  id       String @id @default("contact-info")
+  address  String
+  phone    String
+  email    String
+  mapEmbed String
+}
+
+model Councillor {
+  id           String    @id @default(cuid())
+  ticketNumber String    @unique
+  name         String
+  mobile       String
+  sector       String
+  unit         String
+  designation  String?
+  isAdmitted   Boolean   @default(false)
+  admittedAt   DateTime?
+  eventId      String?
+  notes        String?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  @@index([sector])
+  @@index([mobile])
+}
+
+model Event {
+  id                 String   @id @default(cuid())
+  title              String
+  description        String
+  date               String
+  time               String?
+  venue              String
+  image              String?
+  category           String
+  status             String   @default("UPCOMING")
+  registerUrl        String?
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+  registerButtonText String?  @default("Register for Event")
+  slug               String?  @unique
+}
+
+model Footer {
+  id          String  @id @default("footer-content")
+  aboutText   String
+  socialLinks String
+  copyright   String
+  links       String?
+}
+
+model Gallery {
+  id        String        @id @default(cuid())
+  image     String
+  title     String?
+  event     String?
+  eventSlug String?
+  albumId   String?
+  createdAt DateTime      @default(now())
+  album     GalleryAlbum? @relation(fields: [albumId], references: [id], onDelete: Cascade)
+
+  @@index([eventSlug])
+  @@index([albumId])
+}
+
+model GalleryAlbum {
+  id          String    @id @default(cuid())
+  title       String
+  slug        String    @unique
+  description String?
+  coverImage  String?
+  date        String?
+  location    String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  photos      Gallery[]
+}
+
+model Hero {
+  id           String   @id @default("hero-section")
+  bannerImage  String
+  title        String
+  subtitle     String
+  btn1Text     String
+  btn1Link     String
+  btn2Text     String
+  btn2Link     String
+  bannerImages String?
+  showBtn1     Boolean? @default(true)
+  showBtn2     Boolean? @default(true)
+}
+
+model LitFestResult {
+  id         String   @id @default(cuid())
+  itemName   String
+  category   String
+  winnerName String
+  unitName   String
+  position   Int
+  points     Int
+  createdAt  DateTime @default(now())
+}
+
+model LitFestSession {
+  id        String   @id @default(cuid())
+  itemName  String
+  category  String
+  stage     String
+  time      String
+  status    String
+  createdAt DateTime @default(now())
+}
+
+model LitFestSettings {
+  id            String   @id @default("litfest-settings")
+  title         String   @default("Pulikkal Division Sahithyotsav 2026")
+  subtitle      String   @default("The Ultimate Cultural & Literary Festival")
+  dates         String   @default("August 15, 16, 17")
+  venue         String   @default("Pulikkal, Malappuram")
+  mapLink       String   @default("https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15659.458316109968!2d75.9126938!3d11.1235123!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ba64e43f49352e7%3A0xc3f98229f34f71a0!2sPulikkal%2C%20Kerala!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin")
+  brochureUrl   String   @default("")
+  registerUrl   String   @default("")
+  countdownDate DateTime @default(now())
+}
+
+model Navbar {
+  id         String  @id @default("navbar-settings")
+  logoText   String
+  links      String
+  loginText  String
+  loginLink  String
+  ctaButtons String?
+}
+
+model News {
+  id               String   @id @default(cuid())
+  title            String
+  slug             String   @unique
+  shortDescription String
+  content          String
+  image            String
+  isFeatured       Boolean  @default(false)
+  status           String   @default("PUBLISHED")
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}
+
+model PayasamOrder {
+  id                   String    @id @default(cuid())
+  sectorId             String
+  unitId               String
+  personName           String
+  mobile               String
+  liters               Float
+  paymentStatus        String    @default("PENDING")
+  handedOverToSector   Boolean   @default(false)
+  sectorHandoverAt     DateTime?
+  handedOverToDivision Boolean   @default(false)
+  divisionHandoverAt   DateTime?
+  source               String    @default("PORTAL")
+  notes                String?
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime  @updatedAt
+  unit                 Unit      @relation(fields: [unitId], references: [id], onDelete: Cascade)
+  sector               Sector    @relation(fields: [sectorId], references: [id], onDelete: Cascade)
+
+  @@index([paymentStatus])
+  @@index([unitId])
+  @@index([sectorId])
+}
+
+model PayasamSectorTarget {
+  id           String   @id @default(cuid())
+  sectorId     String   @unique
+  targetLiters Float    @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  sector       Sector   @relation(fields: [sectorId], references: [id], onDelete: Cascade)
+
+  @@index([sectorId])
+}
+
+model PortalNotice {
+  id             String   @id @default(cuid())
+  title          String
+  content        String
+  priority       String   @default("NORMAL")
+  targetAudience String   @default("ALL")
+  fileUrl        String?
+  isPinned       Boolean  @default(false)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model Sector {
+  id              String               @id @default(cuid())
+  name            String               @unique
+  code            String?              @unique
+  username        String?              @unique
+  password        String?
+  presidentName   String?
+  presidentMobile String?
+  secretaryName   String?
+  secretaryMobile String?
+  notes           String?
+  createdAt       DateTime             @default(now())
+  updatedAt       DateTime             @updatedAt
+  payasamOrders   PayasamOrder[]
+  payasamTarget   PayasamSectorTarget?
+  units           Unit[]
+}
+
+model Unit {
+  id              String         @id @default(cuid())
+  name            String
+  code            String?
+  sectorId        String
+  username        String?        @unique
+  password        String?
+  presidentName   String?
+  presidentMobile String?
+  secretaryName   String?
+  secretaryMobile String?
+  notes           String?
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+  payasamOrders   PayasamOrder[]
+  sector          Sector         @relation(fields: [sectorId], references: [id], onDelete: Cascade)
+
+  @@unique([sectorId, name])
+  @@index([sectorId])
+}

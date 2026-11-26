@@ -108,7 +108,7 @@ export async function GET() {
             .sort((a, b) => b.totalLiters - a.totalLiters || a.unitName.localeCompare(b.unitName));
 
         const targetLiters = isDivision
-            ? roundLiters(allSectorTargets.reduce((sum, t) => sum + (t.targetLiters || 0), 0))
+            ? roundLiters((allSectorTargets as { targetLiters?: number }[]).reduce((sum, t) => sum + (t.targetLiters || 0), 0))
             : roundLiters(sectorTarget?.targetLiters || 0);
         const sMetrics = computeOrderMetrics(orders);
         const remainingLiters = roundLiters(Math.max(0, targetLiters - sMetrics.totalLiters));
