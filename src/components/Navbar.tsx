@@ -72,7 +72,6 @@ export function Navbar({ data }: { data?: NavbarData }) {
         >
             <div className="container mx-auto px-6 md:px-12 flex items-center justify-between">
                 <Link href="/" className="flex items-center gap-2 group">
-                    <img src="/portal-icon.png" alt="SSF" className="h-8 w-8" />
                     <span className={cn("font-display text-xl tracking-tight transition-colors", scrolled ? "text-primary" : "text-white")}> 
                       <span className="ssf-font font-black">SSF</span> <span className="font-light">{logoText}</span>
                     </span>

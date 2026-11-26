@@ -20,8 +20,35 @@ const cooperBlack = localFont({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://ssfpulikkaldivision.online"),
   title: "SSF Pulikkal Division",
   description: "Official website of SSF Pulikkal Division. Empowering the society through moral excellence.",
+  icons: {
+    icon: "/portal-icon.png",
+    shortcut: "/portal-icon.png",
+    apple: "/portal-icon.png",
+  },
+  openGraph: {
+    title: "SSF Pulikkal Division",
+    description: "Official website of SSF Pulikkal Division. Empowering the society through moral excellence.",
+    url: "https://ssfpulikkaldivision.online",
+    siteName: "SSF Pulikkal Division",
+    images: [
+      {
+        url: "/api/hero-image",
+        width: 1200,
+        height: 630,
+        alt: "SSF Pulikkal Division",
+      },
+    ],
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "SSF Pulikkal Division",
+    description: "Official website of SSF Pulikkal Division. Empowering the society through moral excellence.",
+    images: ["/api/hero-image"],
+  },
 };
 
 export default function RootLayout({
