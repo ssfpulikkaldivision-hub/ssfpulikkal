@@ -6,7 +6,7 @@ import Link from "next/link";
 import { ArrowLeft, Calendar, MapPin, Share2, Image as ImageIcon } from "lucide-react";
 import { EventGalleryClient } from "@/components/EventGalleryClient";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 
 interface EventGalleryPageProps {
     params: Promise<{ slug: string }>;
@@ -15,17 +15,30 @@ interface EventGalleryPageProps {
 export default async function EventGalleryPage({ params }: EventGalleryPageProps) {
     const { slug } = await params;
 
-    // Fetch Album with all its photos
-    const album = await prisma.galleryAlbum.findUnique({
-        where: { slug },
-        include: {
-            photos: {
-                orderBy: { createdAt: "desc" },
+    // Fetch Album with all its photos + common layout data in parallel
+    const [album, footer, navbar, contact] = await Promise.all([
+        prisma.galleryAlbum.findUnique({
+            where: { slug },
+            include: {
+                photos: {
+                    orderBy: { createdAt: "desc" },
+                    take: 50,
+                    select: {
+                        id: true,
+                        image: true,
+                        title: true,
+                        event: true,
+                        createdAt: true,
+                    },
+                },
             },
-        },
-    });
+        }),
+        prisma.footer.findUnique({ where: { id: "footer-content" } }).catch(() => null),
+        prisma.navbar.findUnique({ where: { id: "navbar-settings" } }).catch(() => null),
+        prisma.contact.findUnique({ where: { id: "contact-info" } }).catch(() => null),
+    ]);
 
-    let photos = album?.photos || [];
+    let photos: any[] = album?.photos || [];
     let title = album?.title;
     let description = album?.description;
     let date = album?.date;
@@ -41,6 +54,14 @@ export default async function EventGalleryPage({ params }: EventGalleryPageProps
                 ],
             },
             orderBy: { createdAt: "desc" },
+            take: 50,
+            select: {
+                id: true,
+                image: true,
+                title: true,
+                event: true,
+                createdAt: true,
+            },
         });
 
         if (loosePhotos.length === 0) {
@@ -50,11 +71,6 @@ export default async function EventGalleryPage({ params }: EventGalleryPageProps
         photos = loosePhotos;
         title = loosePhotos[0].event || slug.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
     }
-
-    // Common layout data
-    const footer = await prisma.footer.findUnique({ where: { id: "footer-content" } }).catch(() => null);
-    const navbar = await prisma.navbar.findUnique({ where: { id: "navbar-settings" } }).catch(() => null);
-    const contact = await prisma.contact.findUnique({ where: { id: "contact-info" } }).catch(() => null);
 
     return (
         <main className="min-h-screen bg-white">

@@ -2,6 +2,15 @@ import { NextRequest, NextResponse } from "next/server";
 
 export function middleware(request: NextRequest) {
     const url = request.nextUrl.clone();
+
+    // Short-circuit legacy /uploads/ requests immediately so they don't invoke Next.js SSR
+    if (url.pathname.startsWith("/uploads/")) {
+        return new NextResponse("Not Found", {
+            status: 404,
+            headers: { "Cache-Control": "public, max-age=86400" },
+        });
+    }
+
     const hostname = request.headers.get("host") || "";
 
     // Check if the request is coming via a "portal" subdomain (e.g. portal.domain.com or portal.localhost:3000)

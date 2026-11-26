@@ -4,7 +4,7 @@ import { Footer } from "@/components/Footer";
 import Link from "next/link";
 import { Calendar, ArrowRight, Layers, Image as ImageIcon } from "lucide-react";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 
 export default async function GalleryPage() {
     let albums: any[] = [];
@@ -14,33 +14,38 @@ export default async function GalleryPage() {
     let contact = null;
 
     try {
-        // Fetch All Event Albums with photo counts and sample cover
-        albums = await prisma.galleryAlbum.findMany({
-            include: {
-                photos: {
-                    take: 1,
-                    orderBy: { createdAt: "desc" },
-                    select: { image: true },
+        [albums, standalonePhotos, footer, navbar, contact] = await Promise.all([
+            prisma.galleryAlbum.findMany({
+                include: {
+                    photos: {
+                        take: 1,
+                        orderBy: { createdAt: "desc" },
+                        select: { image: true },
+                    },
+                    _count: {
+                        select: { photos: true },
+                    },
                 },
-                _count: {
-                    select: { photos: true },
+                orderBy: { createdAt: "desc" },
+            }),
+            prisma.gallery.findMany({
+                where: {
+                    albumId: null,
                 },
-            },
-            orderBy: { createdAt: "desc" },
-        });
-
-        // Also fetch loose photos that might not belong to an album
-        standalonePhotos = await prisma.gallery.findMany({
-            where: {
-                albumId: null,
-            },
-            take: 12,
-            orderBy: { createdAt: "desc" },
-        });
-
-        footer = await prisma.footer.findUnique({ where: { id: "footer-content" } }).catch(() => null);
-        navbar = await prisma.navbar.findUnique({ where: { id: "navbar-settings" } }).catch(() => null);
-        contact = await prisma.contact.findUnique({ where: { id: "contact-info" } }).catch(() => null);
+                take: 12,
+                orderBy: { createdAt: "desc" },
+                select: {
+                    id: true,
+                    image: true,
+                    title: true,
+                    event: true,
+                    createdAt: true,
+                },
+            }),
+            prisma.footer.findUnique({ where: { id: "footer-content" } }).catch(() => null),
+            prisma.navbar.findUnique({ where: { id: "navbar-settings" } }).catch(() => null),
+            prisma.contact.findUnique({ where: { id: "contact-info" } }).catch(() => null),
+        ]);
     } catch (err) {
         console.warn("Could not load GalleryPage data:", err);
     }
