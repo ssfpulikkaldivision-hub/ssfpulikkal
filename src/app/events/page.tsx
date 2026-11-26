@@ -3,7 +3,7 @@ import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { EventsPortal } from "@/components/EventsPortal";
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 60;
 
 export default async function EventsPage() {
     let events: any[] = [];
@@ -12,13 +12,28 @@ export default async function EventsPage() {
     let contact = null;
 
     try {
-        events = await prisma.event.findMany({
-            where: { NOT: { status: "DRAFT" } },
-            orderBy: { createdAt: "desc" },
-        });
-        navbar = await prisma.navbar.findUnique({ where: { id: "navbar-settings" } });
-        footer = await prisma.footer.findUnique({ where: { id: "footer-content" } });
-        contact = await prisma.contact.findUnique({ where: { id: "contact-info" } });
+        [events, navbar, footer, contact] = await Promise.all([
+            prisma.event.findMany({
+                where: { NOT: { status: "DRAFT" } },
+                orderBy: { createdAt: "desc" },
+                take: 30,
+                select: {
+                    id: true,
+                    title: true,
+                    slug: true,
+                    description: true,
+                    date: true,
+                    time: true,
+                    venue: true,
+                    category: true,
+                    status: true,
+                    image: true,
+                },
+            }),
+            prisma.navbar.findUnique({ where: { id: "navbar-settings" } }),
+            prisma.footer.findUnique({ where: { id: "footer-content" } }),
+            prisma.contact.findUnique({ where: { id: "contact-info" } }),
+        ]);
     } catch (err) {
         console.warn("Could not load EventsPage data:", err);
     }

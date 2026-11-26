@@ -5,7 +5,7 @@ import Link from "next/link";
 import { ArrowRight, Clock } from "lucide-react";
 import { formatSSF } from "@/lib/ssf-formatter";
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 60;
 
 export default async function NewsListPage() {
     let news: any[] = [];
@@ -14,13 +14,24 @@ export default async function NewsListPage() {
     let contact = null;
 
     try {
-        news = await prisma.news.findMany({
-            where: { NOT: { status: "DRAFT" } },
-            orderBy: { createdAt: "desc" },
-        });
-        footer = await prisma.footer.findUnique({ where: { id: "footer-content" } });
-        navbar = await prisma.navbar.findUnique({ where: { id: "navbar-settings" } });
-        contact = await prisma.contact.findUnique({ where: { id: "contact-info" } });
+        [news, footer, navbar, contact] = await Promise.all([
+            prisma.news.findMany({
+                where: { NOT: { status: "DRAFT" } },
+                orderBy: { createdAt: "desc" },
+                take: 30,
+                select: {
+                    id: true,
+                    title: true,
+                    slug: true,
+                    shortDescription: true,
+                    image: true,
+                    createdAt: true,
+                },
+            }),
+            prisma.footer.findUnique({ where: { id: "footer-content" } }),
+            prisma.navbar.findUnique({ where: { id: "navbar-settings" } }),
+            prisma.contact.findUnique({ where: { id: "contact-info" } }),
+        ]);
     } catch (err) {
         console.warn("Could not load NewsListPage data:", err);
     }

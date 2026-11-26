@@ -1,6 +1,3 @@
-"use client";
-
-import { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
 import { Calendar, MapPin, ArrowRight, Clock } from "lucide-react";
 
@@ -19,72 +16,7 @@ interface UpcomingEventsProps {
     events: Event[];
 }
 
-function parseEventTimestamp(dateStr: string): number {
-    if (!dateStr) return NaN;
-    const trimmed = dateStr.trim();
-    // If YYYY-MM-DD without time/timezone, parse as IST (+05:30)
-    if (/^\d{4}-\d{2}-\d{2}$/.test(trimmed)) {
-        return Date.parse(`${trimmed}T00:00:00+05:30`);
-    }
-    // If ISO datetime without timezone offset, append +05:30
-    if (/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(:\d{2})?$/.test(trimmed)) {
-        return Date.parse(`${trimmed}+05:30`);
-    }
-    return Date.parse(trimmed);
-}
-
-function findNearestEvent(events: Event[]): Event | null {
-    if (!events.length) return null;
-    const now = Date.now();
-    let nearest = events[0];
-    let minDiff = Infinity;
-    for (const e of events) {
-        const t = parseEventTimestamp(e.date);
-        if (!isNaN(t)) {
-            const diff = t - now;
-            if (diff > 0 && diff < minDiff) {
-                minDiff = diff;
-                nearest = e;
-            }
-        }
-    }
-    return nearest;
-}
-
 export function UpcomingEvents({ events }: UpcomingEventsProps) {
-    const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
-
-    // Compute synchronously from props — no useState/useEffect needed for targetEvent
-    const targetEvent = useMemo(() => findNearestEvent(events), [events]);
-
-    useEffect(() => {
-        if (!targetEvent) return;
-
-        const targetTime = parseEventTimestamp(targetEvent.date);
-        if (isNaN(targetTime)) return;
-
-        const updateTimer = () => {
-            const currentTime = new Date().getTime();
-            const difference = targetTime - currentTime;
-
-            if (difference < 0) {
-                setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0 });
-                return;
-            }
-
-            const d = Math.floor(difference / (1000 * 60 * 60 * 24));
-            const h = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const m = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
-            const s = Math.floor((difference % (1000 * 60)) / 1000);
-
-            setTimeLeft({ days: d, hours: h, minutes: m, seconds: s });
-        };
-
-        updateTimer();
-        const interval = setInterval(updateTimer, 1000);
-        return () => clearInterval(interval);
-    }, [targetEvent]);
-
     return (
         <section className="py-24 bg-black text-white relative overflow-hidden">
             {/* Ambient background blur */}
@@ -92,39 +24,15 @@ export function UpcomingEvents({ events }: UpcomingEventsProps) {
 
             <div className="container mx-auto px-6 md:px-12 relative z-10">
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 items-center">
-                    
-                    {/* Left Column: Nearest Event Countdown */}
+                    {/* Left Column: Heading & Link */}
                     <div className="space-y-6">
                         <span className="inline-block tracking-[0.2em] text-[10px] font-bold text-white/40 uppercase">
-                            Next Event Countdown
+                            Schedule & Programs
                         </span>
                         <h2 className="text-3xl font-display font-medium leading-tight tracking-tight">
-                            {targetEvent ? targetEvent.title : "Upcoming Events"}
+                            Upcoming Events
                         </h2>
-                        
-                        {/* Countdown Grid */}
-                        {targetEvent && (
-                            <div className="grid grid-cols-4 gap-2 pt-4">
-                                <div className="bg-white/5 border border-white/10 p-3 rounded-lg text-center">
-                                    <span className="text-2xl font-bold block">{timeLeft.days}</span>
-                                    <span className="text-[9px] uppercase tracking-wider text-white/30">Days</span>
-                                </div>
-                                <div className="bg-white/5 border border-white/10 p-3 rounded-lg text-center">
-                                    <span className="text-2xl font-bold block">{timeLeft.hours}</span>
-                                    <span className="text-[9px] uppercase tracking-wider text-white/30">Hrs</span>
-                                </div>
-                                <div className="bg-white/5 border border-white/10 p-3 rounded-lg text-center">
-                                    <span className="text-2xl font-bold block">{timeLeft.minutes}</span>
-                                    <span className="text-[9px] uppercase tracking-wider text-white/30">Mins</span>
-                                </div>
-                                <div className="bg-white/5 border border-white/10 p-3 rounded-lg text-center">
-                                    <span className="text-2xl font-bold block">{timeLeft.seconds}</span>
-                                    <span className="text-[9px] uppercase tracking-wider text-white/30">Secs</span>
-                                </div>
-                            </div>
-                        )}
-
-                        <div className="pt-4">
+                        <div className="pt-2">
                             <Link href="/events" className="inline-flex items-center gap-2 text-sm font-semibold hover:text-white/70 transition-colors group">
                                 View Events Calendar <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
                             </Link>
@@ -161,7 +69,6 @@ export function UpcomingEvents({ events }: UpcomingEventsProps) {
                             </div>
                         )}
                     </div>
-
                 </div>
             </div>
         </section>
