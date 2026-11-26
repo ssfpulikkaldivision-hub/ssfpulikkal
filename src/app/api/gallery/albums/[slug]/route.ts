@@ -19,12 +19,19 @@ export async function GET(
 ) {
     try {
         const { slug } = await params;
+        const { searchParams } = new URL(request.url);
+        const skipParam = searchParams.get("skip");
+        const takeParam = searchParams.get("take");
+        const skip = skipParam ? Math.max(0, parseInt(skipParam, 10) || 0) : undefined;
+        const take = takeParam ? Math.min(100, Math.max(1, parseInt(takeParam, 10) || 16)) : undefined;
 
         const album = await prisma.galleryAlbum.findUnique({
             where: { slug },
             include: {
                 photos: {
                     orderBy: { createdAt: "desc" },
+                    ...(skip !== undefined ? { skip } : {}),
+                    ...(take !== undefined ? { take } : {}),
                 },
                 _count: {
                     select: { photos: true },

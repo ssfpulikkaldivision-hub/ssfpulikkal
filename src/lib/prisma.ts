@@ -43,26 +43,24 @@ function getD1Binding(): any {
 }
 
 let cachedClient: PrismaClient | null = null;
+let cachedBinding: any = null;
 let isBoundToD1 = false;
 
 function getPrismaClient(): PrismaClient {
-    if (cachedClient && isBoundToD1) {
-        return cachedClient;
-    }
-
     const binding = getD1Binding();
 
-    // If Cloudflare worker D1 binding is present, prioritize it
+    // If Cloudflare worker D1 binding is present, prioritize it and re-bind if binding reference changed
     if (binding && typeof binding.prepare === "function") {
-        if (!cachedClient || !isBoundToD1) {
+        if (!cachedClient || !isBoundToD1 || cachedBinding !== binding) {
             const adapter = new PrismaD1(binding);
             cachedClient = new PrismaClient({ adapter });
+            cachedBinding = binding;
             isBoundToD1 = true;
         }
         return cachedClient;
     }
 
-    if (cachedClient) return cachedClient;
+    if (cachedClient && !isBoundToD1) return cachedClient;
 
     // Cloudflare D1 over HTTP REST API (used in local development when token is in .env)
     const useLocal = process.env.USE_LOCAL_DB === "true" || process.env.USE_LOCAL_SQLITE === "true";

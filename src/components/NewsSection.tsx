@@ -1,8 +1,5 @@
-"use client";
-
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
-import { useState, useEffect } from "react";
 import { formatSSF } from "@/lib/ssf-formatter";
 
 interface NewsItem {
@@ -19,11 +16,6 @@ interface NewsSectionProps {
 }
 
 export function NewsSection({ news }: NewsSectionProps) {
-    const [mounted, setMounted] = useState(false);
-
-    useEffect(() => {
-        setMounted(true);
-    }, []);
 
     return (
         <section id="news" className="py-32 bg-white">
@@ -51,13 +43,9 @@ export function NewsSection({ news }: NewsSectionProps) {
                                             <img
                                                 src={item.image}
                                                 alt={item.title}
+                                                loading="lazy"
+                                                decoding="async"
                                                 className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
-                                                onError={(e) => {
-                                                    const target = e.currentTarget;
-                                                    target.style.display = "none";
-                                                    const placeholder = target.nextElementSibling as HTMLElement;
-                                                    if (placeholder) placeholder.style.display = "flex";
-                                                }}
                                             />
                                         ) : null}
                                         <div
@@ -74,7 +62,7 @@ export function NewsSection({ news }: NewsSectionProps) {
                                     </div>
                                     <div className="space-y-4">
                                         <div className="text-xs font-bold uppercase tracking-widest text-gray-400">
-                                            {mounted ? new Date(item.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) : ""}
+                                            {new Date(item.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
                                         </div>
                                         <h4 
                                             className="font-malayalam text-xl md:text-2xl font-bold text-black group-hover:text-primary transition-colors leading-snug tracking-normal"

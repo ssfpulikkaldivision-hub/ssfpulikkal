@@ -89,6 +89,7 @@ model Councillor {
 
   @@index([sector])
   @@index([mobile])
+  @@index([isAdmitted])
 }
 
 model Event {
@@ -106,6 +107,9 @@ model Event {
   updatedAt          DateTime @updatedAt
   registerButtonText String?  @default("Register for Event")
   slug               String?  @unique
+
+  @@index([status, createdAt])
+  @@index([createdAt])
 }
 
 model Footer {
@@ -128,6 +132,8 @@ model Gallery {
 
   @@index([eventSlug])
   @@index([albumId])
+  @@index([albumId, createdAt])
+  @@index([createdAt])
 }
 
 model GalleryAlbum {
@@ -141,6 +147,8 @@ model GalleryAlbum {
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
   photos      Gallery[]
+
+  @@index([createdAt])
 }
 
 model Hero {
@@ -177,6 +185,9 @@ model News {
   status           String   @default("PUBLISHED")
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
+
+  @@index([status, createdAt])
+  @@index([createdAt])
 }
 
 model PayasamOrder {
@@ -224,6 +235,8 @@ model PortalNotice {
   isPinned       Boolean  @default(false)
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
+
+  @@index([isPinned, createdAt])
 }
 
 model Sector {

@@ -22,7 +22,7 @@ export default async function EventGalleryPage({ params }: EventGalleryPageProps
             include: {
                 photos: {
                     orderBy: { createdAt: "desc" },
-                    take: 50,
+                    take: 16,
                     select: {
                         id: true,
                         image: true,
@@ -30,6 +30,9 @@ export default async function EventGalleryPage({ params }: EventGalleryPageProps
                         event: true,
                         createdAt: true,
                     },
+                },
+                _count: {
+                    select: { photos: true },
                 },
             },
         }),
@@ -39,6 +42,7 @@ export default async function EventGalleryPage({ params }: EventGalleryPageProps
     ]);
 
     let photos: any[] = album?.photos || [];
+    let totalCount: number = album?._count?.photos ?? photos.length;
     let title = album?.title;
     let description = album?.description;
     let date = album?.date;
@@ -131,7 +135,7 @@ export default async function EventGalleryPage({ params }: EventGalleryPageProps
             {/* Photos Grid & Lightbox */}
             <div className="py-16">
                 <div className="container mx-auto px-6 md:px-12 max-w-6xl">
-                    <EventGalleryClient photos={photos} eventTitle={title || "Event Gallery"} />
+                    <EventGalleryClient photos={photos} eventTitle={title || "Event Gallery"} albumSlug={slug} totalCount={totalCount} />
                 </div>
             </div>
 

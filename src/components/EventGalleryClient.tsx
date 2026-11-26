@@ -15,11 +15,41 @@ interface Photo {
 interface EventGalleryClientProps {
     photos: Photo[];
     eventTitle: string;
+    albumSlug?: string;
+    totalCount?: number;
 }
 
-export function EventGalleryClient({ photos, eventTitle }: EventGalleryClientProps) {
+export function EventGalleryClient({ photos: initialPhotos, eventTitle, albumSlug, totalCount }: EventGalleryClientProps) {
+    const [photos, setPhotos] = useState<Photo[]>(initialPhotos);
     const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
     const [copied, setCopied] = useState(false);
+    const [loadingMore, setLoadingMore] = useState(false);
+    const [loadError, setLoadError] = useState<string | null>(null);
+
+    const total = totalCount ?? photos.length;
+    const hasMore = photos.length < total && !!albumSlug;
+
+    const handleLoadMore = async () => {
+        if (!albumSlug || loadingMore) return;
+        setLoadingMore(true);
+        setLoadError(null);
+        try {
+            const res = await fetch(`/api/gallery/albums/${encodeURIComponent(albumSlug)}?skip=${photos.length}&take=16`);
+            if (!res.ok) throw new Error("Failed to load more photos");
+            const data = await res.json();
+            if (Array.isArray(data.photos) && data.photos.length > 0) {
+                setPhotos((prev) => {
+                    const existingIds = new Set(prev.map((p) => p.id));
+                    const next = data.photos.filter((p: Photo) => !existingIds.has(p.id));
+                    return [...prev, ...next];
+                });
+            }
+        } catch (err: any) {
+            setLoadError(err?.message || "Could not load more photos");
+        } finally {
+            setLoadingMore(false);
+        }
+    };
 
     const handleShare = () => {
         if (typeof window !== "undefined") {
@@ -70,6 +100,7 @@ export function EventGalleryClient({ photos, eventTitle }: EventGalleryClientPro
 
             {/* Photo Grid */}
             {photos.length > 0 ? (
+                <>
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                     {photos.map((photo, index) => (
                         <motion.div
@@ -85,6 +116,7 @@ export function EventGalleryClient({ photos, eventTitle }: EventGalleryClientPro
                                 alt={photo.title || eventTitle}
                                 className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                                 loading="lazy"
+                                decoding="async"
                             />
 
                             {/* Hover Overlay */}
@@ -102,6 +134,20 @@ export function EventGalleryClient({ photos, eventTitle }: EventGalleryClientPro
                         </motion.div>
                     ))}
                 </div>
+                {hasMore && (
+                    <div className="flex flex-col items-center gap-2 pt-4">
+                        {loadError && <p className="text-xs text-red-500">{loadError}</p>}
+                        <button
+                            type="button"
+                            onClick={handleLoadMore}
+                            disabled={loadingMore}
+                            className="px-6 py-2.5 rounded-xl bg-black text-white text-xs font-bold uppercase tracking-wider hover:bg-zinc-800 disabled:opacity-50 transition-colors cursor-pointer"
+                        >
+                            {loadingMore ? "Loading..." : `Load More (${total - photos.length} remaining)`}
+                        </button>
+                    </div>
+                )}
+                </>
             ) : (
                 <div className="py-24 text-center border border-dashed border-gray-200 rounded-2xl bg-gray-50">
                     <p className="text-sm text-gray-500 font-medium">No photos in this album yet.</p>
