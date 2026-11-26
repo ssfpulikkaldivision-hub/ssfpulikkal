@@ -40,12 +40,30 @@ export default function PortalCampaignsPage() {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
+        const CACHE_KEY = "portal_campaigns_list_cache";
+        const CACHE_TTL = 60 * 1000;
+
+        try {
+            const cached = sessionStorage.getItem(CACHE_KEY);
+            if (cached) {
+                const { data, timestamp } = JSON.parse(cached);
+                if (Date.now() - timestamp < CACHE_TTL && Array.isArray(data)) {
+                    setCampaigns(data);
+                    setLoading(false);
+                }
+            }
+        } catch {}
+
         async function fetchCampaigns() {
             try {
                 const res = await fetch("/api/portal/campaigns");
                 if (res.ok) {
                     const data = await res.json();
-                    setCampaigns(data.campaigns || []);
+                    const list = data.campaigns || [];
+                    setCampaigns(list);
+                    try {
+                        sessionStorage.setItem(CACHE_KEY, JSON.stringify({ data: list, timestamp: Date.now() }));
+                    } catch {}
                 }
             } catch (err) {
                 console.error("Failed to load portal campaigns", err);

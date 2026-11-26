@@ -392,16 +392,18 @@ export function PortalSidebar({ session }: PortalSidebarProps) {
                     </Link>
                 )}
 
-                <Link
-                    href="/portal/profile"
-                    className={cn(
-                        "flex flex-col items-center justify-center gap-0.5 px-3 py-1 rounded-xl text-[11px] font-medium transition-colors",
-                        isActive("/portal/profile") ? "text-[#1b7a42] font-bold" : "text-gray-500"
-                    )}
-                >
-                    <UserCircle size={20} />
-                    <span>Profile</span>
-                </Link>
+                {session.type === "DIVISION" && (
+                    <Link
+                        href="/portal/profile"
+                        className={cn(
+                            "flex flex-col items-center justify-center gap-0.5 px-3 py-1 rounded-xl text-[11px] font-medium transition-colors",
+                            isActive("/portal/profile") ? "text-[#1b7a42] font-bold" : "text-gray-500"
+                        )}
+                    >
+                        <UserCircle size={20} />
+                        <span>Profile</span>
+                    </Link>
+                )}
             </nav>
         </>
     );
