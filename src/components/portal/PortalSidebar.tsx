@@ -354,6 +354,55 @@ export function PortalSidebar({ session }: PortalSidebarProps) {
                     <div className="flex-1" onClick={() => setIsMobileOpen(false)} />
                 </div>
             )}
+
+            {/* Mobile App-Style Bottom Navigation Bar */}
+            <nav className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-gray-200 px-2 py-1.5 flex items-center justify-around shadow-[0_-4px_20px_rgba(0,0,0,0.05)]">
+                <Link
+                    href="/portal"
+                    className={cn(
+                        "flex flex-col items-center justify-center gap-0.5 px-3 py-1 rounded-xl text-[11px] font-medium transition-colors",
+                        isActive("/portal", true) ? "text-[#1b7a42] font-bold" : "text-gray-500"
+                    )}
+                >
+                    <LayoutDashboard size={20} />
+                    <span>Home</span>
+                </Link>
+
+                <Link
+                    href="/portal/campaigns"
+                    className={cn(
+                        "flex flex-col items-center justify-center gap-0.5 px-3 py-1 rounded-xl text-[11px] font-medium transition-colors",
+                        isActive("/portal/campaigns") ? "text-[#1b7a42] font-bold" : "text-gray-500"
+                    )}
+                >
+                    <Target size={20} />
+                    <span>Campaigns</span>
+                </Link>
+
+                {session.type !== "UNIT" && (
+                    <Link
+                        href="/portal/entities"
+                        className={cn(
+                            "flex flex-col items-center justify-center gap-0.5 px-3 py-1 rounded-xl text-[11px] font-medium transition-colors",
+                            isActive("/portal/entities") ? "text-[#1b7a42] font-bold" : "text-gray-500"
+                        )}
+                    >
+                        <Building2 size={20} />
+                        <span>{session.type === "SECTOR" ? "Units" : "Entities"}</span>
+                    </Link>
+                )}
+
+                <Link
+                    href="/portal/profile"
+                    className={cn(
+                        "flex flex-col items-center justify-center gap-0.5 px-3 py-1 rounded-xl text-[11px] font-medium transition-colors",
+                        isActive("/portal/profile") ? "text-[#1b7a42] font-bold" : "text-gray-500"
+                    )}
+                >
+                    <UserCircle size={20} />
+                    <span>Profile</span>
+                </Link>
+            </nav>
         </>
     );
 }

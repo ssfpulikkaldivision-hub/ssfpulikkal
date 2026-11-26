@@ -71,6 +71,23 @@ export default function PortalDashboard() {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
+        const CACHE_KEY = "portal_dashboard_cache";
+        const CACHE_TTL = 60 * 1000; // 60 seconds
+
+        try {
+            const cached = sessionStorage.getItem(CACHE_KEY);
+            if (cached) {
+                const { entity: cachedEntity, campaigns: cachedCampaigns, timestamp } = JSON.parse(cached);
+                if (Date.now() - timestamp < CACHE_TTL && cachedEntity) {
+                    setEntity(cachedEntity);
+                    setCampaigns(cachedCampaigns || []);
+                    setLoading(false);
+                }
+            }
+        } catch {
+            // Ignore sessionStorage errors
+        }
+
         async function loadData() {
             try {
                 const [meRes, campRes] = await Promise.all([
@@ -78,14 +95,32 @@ export default function PortalDashboard() {
                     fetch("/api/portal/campaigns"),
                 ]);
 
+                let loadedEntity = null;
+                let loadedCampaigns: CampaignItem[] = [];
+
                 if (meRes.ok) {
                     const data = await meRes.json();
-                    setEntity(data.entity);
+                    loadedEntity = data.entity;
+                    setEntity(loadedEntity);
                 }
 
                 if (campRes.ok) {
                     const cData = await campRes.json();
-                    setCampaigns(cData.campaigns || []);
+                    loadedCampaigns = cData.campaigns || [];
+                    setCampaigns(loadedCampaigns);
+                }
+
+                if (loadedEntity) {
+                    try {
+                        sessionStorage.setItem(
+                            CACHE_KEY,
+                            JSON.stringify({
+                                entity: loadedEntity,
+                                campaigns: loadedCampaigns,
+                                timestamp: Date.now(),
+                            })
+                        );
+                    } catch {}
                 }
             } catch (err) {
                 console.error("Failed to load entity details", err);
