@@ -37,6 +37,7 @@ interface WorkspaceModule {
 
 export default function PortalCampaignsPage() {
     const [campaigns, setCampaigns] = useState<CampaignItem[]>([]);
+    const [entityType, setEntityType] = useState<string | null>(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -44,6 +45,11 @@ export default function PortalCampaignsPage() {
         const CACHE_TTL = 60 * 1000;
 
         try {
+            const dashCached = sessionStorage.getItem("portal_dashboard_cache");
+            if (dashCached) {
+                const { entity } = JSON.parse(dashCached);
+                if (entity?.type) setEntityType(entity.type);
+            }
             const cached = sessionStorage.getItem(CACHE_KEY);
             if (cached) {
                 const { data, timestamp } = JSON.parse(cached);
@@ -56,7 +62,14 @@ export default function PortalCampaignsPage() {
 
         async function fetchCampaigns() {
             try {
-                const res = await fetch("/api/portal/campaigns");
+                const [res, meRes] = await Promise.all([
+                    fetch("/api/portal/campaigns"),
+                    fetch("/api/portal/auth/me"),
+                ]);
+                if (meRes.ok) {
+                    const meData = await meRes.json();
+                    if (meData.entity?.type) setEntityType(meData.entity.type);
+                }
                 if (res.ok) {
                     const data = await res.json();
                     const list = data.campaigns || [];
@@ -93,17 +106,20 @@ export default function PortalCampaignsPage() {
     };
 
     const modules: WorkspaceModule[] = useMemo(() => {
-        // Base core modules
-        const list: WorkspaceModule[] = [
-            {
-                id: "entity-management",
-                title: "Entity Management",
-                description: "Manage organizational hierarchy and entities",
-                category: "Organization",
-                href: "/portal/entities",
-                icon: <Building2 size={20} className="text-emerald-700" />,
-            },
-        ];
+        // Base core modules (only for Division & Sector, not Unit)
+        const list: WorkspaceModule[] =
+            entityType && entityType !== "UNIT"
+                ? [
+                      {
+                          id: "entity-management",
+                          title: "Entity Management",
+                          description: "Manage organizational hierarchy and entities",
+                          category: "Organization",
+                          href: "/portal/entities",
+                          icon: <Building2 size={20} className="text-emerald-700" />,
+                      },
+                  ]
+                : [];
 
         // Dynamic campaign modules from DB
         campaigns
