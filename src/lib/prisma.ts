@@ -46,6 +46,10 @@ let cachedClient: PrismaClient | null = null;
 let isBoundToD1 = false;
 
 function getPrismaClient(): PrismaClient {
+    if (cachedClient && isBoundToD1) {
+        return cachedClient;
+    }
+
     const binding = getD1Binding();
 
     // If Cloudflare worker D1 binding is present, prioritize it
