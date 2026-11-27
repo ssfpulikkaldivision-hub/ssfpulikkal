@@ -911,7 +911,7 @@ export default function PortalPayasamChallengePage() {
                   paidLiters: data.summary.paidLiters,
                   pendingLiters: data.summary.pendingLiters,
                   totalOrders: data.summary.totalOrders,
-                  sectors: (data.sectorBreakdown || []).map((s) => ({
+                  sectors: ((data as any).sectorBreakdown || []).map((s: any) => ({
                       name: s.sectorName,
                       targetLiters: s.targetLiters,
                       achievedLiters: s.achievedLiters,
