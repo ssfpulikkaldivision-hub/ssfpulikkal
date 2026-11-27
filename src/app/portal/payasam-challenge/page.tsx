@@ -904,7 +904,22 @@ export default function PortalPayasamChallengePage() {
     // SECTOR / DIVISION PORTAL VIEW
     // =========================================================================
     const sectorAnalysisText =
-        data.entityType === "DIVISION" && sectorTab === "SECTORS"
+        sectorTab === "ORDERS"
+            ? [
+                  `*Payasam Challenge - Orders List*`,
+                  ``,
+                  `Total Orders: ${filteredSectorOrders.length}`,
+                  ``,
+                  ...(filteredSectorOrders.length > 0
+                      ? filteredSectorOrders.map(
+                            (o, idx) =>
+                                `${idx + 1}. ${o.personName}${o.unit?.name ? ` (${o.unit.name})` : ""} - *${formatLiters(o.liters)} L* [${o.paymentStatus}]`
+                        )
+                      : ["No orders found."]),
+                  ``,
+                  data.entityType === "DIVISION" ? `©️ SSF Pulikkal Division` : `©️ SSF ${data.entity.name} Sector`,
+              ].join("\n")
+            : data.entityType === "DIVISION" && sectorTab === "SECTORS"
             ? buildDivisionAnalysisText({
                   totalTarget: data.summary.targetLiters,
                   totalAchieved: data.summary.totalLiters,
