@@ -327,6 +327,11 @@ export default function PortalPayasamChallengePage() {
     };
 
     const handleToggleDivisionHandover = async (order: PayasamOrderItem) => {
+        // Prerequisite: cannot hand to Division until handed to Sector first
+        if (!order.handedOverToSector && !order.handedOverToDivision) {
+            alert("This order must be handed over to the Sector first before marking Division handover.");
+            return;
+        }
         try {
             const res = await fetch(`/api/portal/payasam/${order.id}`, {
                 method: "PATCH",
@@ -1120,6 +1125,7 @@ export default function PortalPayasamChallengePage() {
                             disabled={bulkLoading}
                             onClick={() => handleBulkAction("HANDOVER_TO_DIVISION", { unitIds: selectedUnitIdsList })}
                             className="px-3.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold cursor-pointer disabled:opacity-60"
+                            title="Only orders already received from units (Sector handover done) will be marked"
                         >
                             Mark Handed Over to Division
                         </button>
@@ -1154,6 +1160,7 @@ export default function PortalPayasamChallengePage() {
                             disabled={bulkLoading}
                             onClick={() => handleBulkAction("HANDOVER_TO_DIVISION", { orderIds: selectedOrderIdsList })}
                             className="px-3.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold cursor-pointer disabled:opacity-60"
+                            title="Only orders already received from units (Sector handover done) will be marked"
                         >
                             Mark Handed to Division
                         </button>
@@ -1407,18 +1414,32 @@ export default function PortalPayasamChallengePage() {
                                                 </button>
                                             </td>
                                             <td className="py-3.5 px-4">
-                                                <button
-                                                    type="button"
-                                                    onClick={() => handleToggleDivisionHandover(order)}
-                                                    className={cn(
-                                                        "px-2.5 py-1 rounded-full text-[11px] font-bold cursor-pointer",
-                                                        order.handedOverToDivision
-                                                            ? "bg-emerald-700 text-white"
-                                                            : "bg-gray-100 text-gray-500 hover:bg-gray-200"
-                                                    )}
-                                                >
-                                                    {order.handedOverToDivision ? "Handed to Division" : "Not Handed"}
-                                                </button>
+                                                {order.handedOverToDivision ? (
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => handleToggleDivisionHandover(order)}
+                                                        className="px-2.5 py-1 rounded-full text-[11px] font-bold cursor-pointer bg-emerald-700 text-white hover:bg-emerald-800"
+                                                        title="Click to undo Division handover"
+                                                    >
+                                                        Handed to Division
+                                                    </button>
+                                                ) : order.handedOverToSector ? (
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => handleToggleDivisionHandover(order)}
+                                                        className="px-2.5 py-1 rounded-full text-[11px] font-bold cursor-pointer bg-gray-100 text-gray-500 hover:bg-emerald-100 hover:text-emerald-800"
+                                                        title="Mark as handed to Division"
+                                                    >
+                                                        Not Handed
+                                                    </button>
+                                                ) : (
+                                                    <span
+                                                        className="px-2.5 py-1 rounded-full text-[11px] font-bold bg-gray-50 text-gray-300 cursor-not-allowed select-none"
+                                                        title="Unit must hand over to Sector first"
+                                                    >
+                                                        Awaiting Sector
+                                                    </span>
+                                                )}
                                             </td>
                                         </tr>
                                     ))}
@@ -1455,6 +1476,7 @@ export default function PortalPayasamChallengePage() {
                                                 })
                                             }
                                             className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-semibold cursor-pointer disabled:opacity-60"
+                                            title="Only orders already received from this unit (Sector handover done) will be marked as handed to Division"
                                         >
                                             <ArrowUpRight size={13} />
                                             <span>Hand All to Division</span>
@@ -1571,18 +1593,32 @@ export default function PortalPayasamChallengePage() {
                                                     </button>
                                                 </td>
                                                 <td className="py-3 px-3">
-                                                    <button
-                                                        type="button"
-                                                        onClick={() => handleToggleDivisionHandover(order)}
-                                                        className={cn(
-                                                            "px-2 py-0.5 rounded-full text-[10px] font-bold cursor-pointer",
-                                                            order.handedOverToDivision
-                                                                ? "bg-emerald-700 text-white"
-                                                                : "bg-gray-100 text-gray-500"
-                                                        )}
-                                                    >
-                                                        {order.handedOverToDivision ? "Handed" : "Pending"}
-                                                    </button>
+                                                    {order.handedOverToDivision ? (
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => handleToggleDivisionHandover(order)}
+                                                            className="px-2 py-0.5 rounded-full text-[10px] font-bold cursor-pointer bg-emerald-700 text-white hover:bg-emerald-800"
+                                                            title="Click to undo Division handover"
+                                                        >
+                                                            Handed
+                                                        </button>
+                                                    ) : order.handedOverToSector ? (
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => handleToggleDivisionHandover(order)}
+                                                            className="px-2 py-0.5 rounded-full text-[10px] font-bold cursor-pointer bg-gray-100 text-gray-500 hover:bg-emerald-100 hover:text-emerald-800"
+                                                            title="Mark as handed to Division"
+                                                        >
+                                                            Pending
+                                                        </button>
+                                                    ) : (
+                                                        <span
+                                                            className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-gray-50 text-gray-300 cursor-not-allowed select-none"
+                                                            title="Unit must hand over to Sector first"
+                                                        >
+                                                            Awaiting
+                                                        </span>
+                                                    )}
                                                 </td>
                                                 <td className="py-3 px-3 text-right">
                                                     <button

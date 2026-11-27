@@ -296,8 +296,6 @@ export async function PATCH(request: NextRequest) {
                 }
                 updateData = {
                     paymentStatus: "PAID",
-                    handedOverToSector: true,
-                    sectorHandoverAt: now,
                     handedOverToDivision: true,
                     divisionHandoverAt: now,
                 };
@@ -329,6 +327,11 @@ export async function PATCH(request: NextRequest) {
             whereClause.id = { in: orderIds };
         } else if (unitIds.length > 0) {
             whereClause.unitId = { in: unitIds };
+        }
+
+        // For Division handover, only process orders already handed to Sector (prerequisite)
+        if (action === "HANDOVER_TO_DIVISION") {
+            whereClause.handedOverToSector = true;
         }
 
         const result = await prisma.payasamOrder.updateMany({

@@ -100,12 +100,17 @@ export async function PATCH(
                     { status: 403 }
                 );
             }
+            // Prerequisite: order must have been handed to sector first before it can be handed to division
+            if (body.handedOverToDivision && !existing.handedOverToSector) {
+                return NextResponse.json(
+                    { error: "This order has not been handed over to the Sector yet. Please complete the Unit → Sector handover first." },
+                    { status: 400 }
+                );
+            }
             updateData.handedOverToDivision = body.handedOverToDivision;
             updateData.divisionHandoverAt = body.handedOverToDivision ? new Date() : null;
             if (body.handedOverToDivision) {
                 updateData.paymentStatus = "PAID";
-                updateData.handedOverToSector = true;
-                updateData.sectorHandoverAt = new Date();
             }
         }
 
