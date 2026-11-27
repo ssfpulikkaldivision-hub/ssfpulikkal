@@ -29,6 +29,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     const pathname = usePathname();
     const router = useRouter();
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+    const [isMobileOpen, setIsMobileOpen] = useState(false);
 
     useEffect(() => {
         if (status === "unauthenticated" && pathname !== "/admin/login") {
@@ -63,11 +64,20 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
     return (
         <div className="min-h-screen bg-gray-50 flex font-sans">
+            {/* Mobile Backdrop */}
+            {isMobileOpen && (
+                <div
+                    className="fixed inset-0 bg-black/40 backdrop-blur-xs z-40 lg:hidden"
+                    onClick={() => setIsMobileOpen(false)}
+                />
+            )}
+
             {/* Sidebar */}
             <aside
                 className={cn(
-                    "bg-white border-r border-gray-100 transition-all duration-300 z-50 fixed lg:relative h-full flex-shrink-0",
-                    isSidebarOpen ? "w-64" : "w-0 lg:w-20 overflow-hidden"
+                    "bg-white border-r border-gray-100 transition-all duration-300 z-50 fixed lg:relative inset-y-0 left-0 h-full flex-shrink-0",
+                    isMobileOpen ? "translate-x-0 w-64" : "-translate-x-full lg:translate-x-0",
+                    isSidebarOpen ? "lg:w-64" : "lg:w-20 overflow-hidden"
                 )}
             >
                 <div className="p-6 flex flex-col h-full">
@@ -89,6 +99,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                             <Link
                                 key={item.href}
                                 href={item.href}
+                                onClick={() => setIsMobileOpen(false)}
                                 className={cn(
                                     "flex items-center px-3 py-2.5 rounded-lg transition-all text-sm",
                                     pathname === item.href || pathname.startsWith(item.href + "/")
@@ -132,13 +143,23 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             {/* Main */}
             <main className="flex-1 min-w-0 overflow-auto">
                 {/* Top bar */}
-                <header className="h-16 bg-white border-b border-gray-100 flex items-center justify-between px-6 sticky top-0 z-40">
-                    <button
-                        onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-                        className="p-2 hover:bg-gray-50 rounded-lg transition-colors text-gray-400 hover:text-black"
-                    >
-                        {isSidebarOpen ? <X size={18} /> : <Menu size={18} />}
-                    </button>
+                <header className="h-16 bg-white border-b border-gray-100 flex items-center justify-between px-4 sm:px-6 sticky top-0 z-30">
+                    <div className="flex items-center gap-2">
+                        <button
+                            onClick={() => setIsMobileOpen(!isMobileOpen)}
+                            className="lg:hidden p-2 hover:bg-gray-50 rounded-lg transition-colors text-gray-500 hover:text-black"
+                            aria-label="Toggle mobile menu"
+                        >
+                            {isMobileOpen ? <X size={20} /> : <Menu size={20} />}
+                        </button>
+                        <button
+                            onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+                            className="hidden lg:block p-2 hover:bg-gray-50 rounded-lg transition-colors text-gray-400 hover:text-black"
+                            aria-label="Toggle desktop sidebar"
+                        >
+                            {isSidebarOpen ? <X size={18} /> : <Menu size={18} />}
+                        </button>
+                    </div>
 
                     <div className="flex items-center gap-3">
                         <div className="text-right hidden sm:block">
@@ -151,7 +172,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                     </div>
                 </header>
 
-                <div className="p-8 max-w-7xl mx-auto">
+                <div className="p-4 sm:p-6 lg:p-8 max-w-7xl mx-auto">
                     {children}
                 </div>
             </main>
