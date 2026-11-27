@@ -54,7 +54,7 @@ interface SubmittedOrder {
     unitName: string;
 }
 
-const LITER_PRESETS = [0.5, 1, 1.5, 2, 3, 5];
+const LITER_PRESETS = [1, 2, 3, 5];
 
 export function PayasamPublicForm() {
     const searchParams = useSearchParams();
