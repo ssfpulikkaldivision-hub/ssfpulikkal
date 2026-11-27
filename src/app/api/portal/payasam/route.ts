@@ -115,6 +115,23 @@ export async function GET() {
         const completionPercentage =
             targetLiters > 0 ? Math.min(999, Math.round((sMetrics.totalLiters / targetLiters) * 100)) : 0;
 
+        const sectorBreakdown = isDivision
+            ? (allSectorTargets as Array<{ sectorId: string; targetLiters: number; sector: { id: string; name: string; code: string | null } }>)
+                  .map((st) => {
+                      const sOrders = orders.filter((o) => o.sectorId === st.sectorId);
+                      const sMetrics = computeOrderMetrics(sOrders);
+                      return {
+                          sectorId: st.sectorId,
+                          sectorName: st.sector.name,
+                          sectorCode: st.sector.code,
+                          targetLiters: roundLiters(st.targetLiters || 0),
+                          achievedLiters: sMetrics.totalLiters,
+                          ordersCount: sMetrics.totalOrders,
+                      };
+                  })
+                  .sort((a, b) => b.achievedLiters - a.achievedLiters || a.sectorName.localeCompare(b.sectorName))
+            : [];
+
         return NextResponse.json({
             entityType: isDivision ? "DIVISION" : "SECTOR",
             entity: {
@@ -131,6 +148,7 @@ export async function GET() {
                 totalUnitsCount: units.length,
                 activeUnitsCount: unitBreakdown.filter((u) => u.ordersCount > 0).length,
             },
+            sectorBreakdown,
             unitBreakdown,
             orders,
         });

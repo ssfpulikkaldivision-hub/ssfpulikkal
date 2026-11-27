@@ -213,11 +213,12 @@ export function buildSectorAnalysisText(params: {
         `Target: *${formatLiters(targetLiters)} L*`,
         `Achieved: *${formatLiters(achievedLiters)} L*${targetLiters > 0 ? ` (${pct}%)` : ""}`,
         `Remaining: *${formatLiters(remaining)} L*`,
-        `Paid: ${formatLiters(paidLiters)} L | Pending: ${formatLiters(pendingLiters)} L`,
         `Total Orders: ${totalOrders}`,
         ``,
         `*Unit-wise Liter Status:*`,
         ...(unitLines.length > 0 ? unitLines : ["No units found."]),
+        ``,
+        `©️ SSF Pulikkal Division`,
     ].join("\n");
 }
 
@@ -267,5 +268,7 @@ export function buildDivisionAnalysisText(params: {
         ``,
         `*Sector-wise Status:*`,
         ...(sectorLines.length > 0 ? sectorLines : ["No sectors found."]),
+        ``,
+        `©️ SSF Pulikkal Division`,
     ].join("\n");
 }
