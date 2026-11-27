@@ -18,11 +18,28 @@ export async function GET(request: NextRequest) {
                 ? { in: ["ALL", "SECTOR_ONLY"] }
                 : { in: ["ALL", "UNIT_ONLY"] };
 
-        // Fetch campaigns matching audience
+        // Fetch campaigns matching audience (explicit select to avoid over-fetching heavy LONGTEXT fields)
         const campaigns = await prisma.campaign.findMany({
             where: {
                 targetAudience: audienceFilter,
                 status: { not: "ARCHIVED" },
+            },
+            select: {
+                id: true,
+                title: true,
+                slug: true,
+                description: true,
+                category: true,
+                targetAudience: true,
+                startDate: true,
+                endDate: true,
+                status: true,
+                bannerImage: true,
+                attachmentUrl: true,
+                targetValue: true,
+                targetUnit: true,
+                createdAt: true,
+                updatedAt: true,
             },
             orderBy: [{ status: "asc" }, { createdAt: "desc" }],
         });
