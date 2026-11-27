@@ -284,18 +284,6 @@ export function PortalSidebar({ session }: PortalSidebarProps) {
                                     <span>My Account</span>
                                 </div>
                             </Link>
-
-                            <a
-                                href="/admin"
-                                target="_blank"
-                                className="flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold text-amber-900 bg-amber-50/80 hover:bg-amber-100/80 border border-amber-200/60 transition-colors mt-2"
-                            >
-                                <div className="flex items-center gap-2.5">
-                                    <Shield size={16} className="text-amber-700" />
-                                    <span>Admin Panel</span>
-                                </div>
-                                <ExternalLink size={13} className="text-amber-600" />
-                            </a>
                         </>
                     )}
                 </div>
