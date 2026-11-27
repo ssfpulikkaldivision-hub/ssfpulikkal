@@ -200,25 +200,21 @@ export function buildSectorAnalysisText(params: {
     const pct = targetLiters > 0 ? Math.round((achievedLiters / targetLiters) * 100) : 0;
 
     const unitLines = units.map(
-        (u, idx) =>
-            `${idx + 1}. ${u.unitName}: *${formatLiters(u.totalLiters)} L* (${u.ordersCount} ${
-                u.ordersCount === 1 ? "order" : "orders"
-            })`
+        (u, idx) => `${idx + 1}. ${u.unitName}: *${formatLiters(u.totalLiters)} L*`
     );
 
     return [
-        `*Payasam Challenge - Sector Analysis*`,
-        `Sector: *${sectorName}*`,
+        `*Payasam Challenge - Analysis*`,
         ``,
         `Target: *${formatLiters(targetLiters)} L*`,
         `Achieved: *${formatLiters(achievedLiters)} L*${targetLiters > 0 ? ` (${pct}%)` : ""}`,
         `Remaining: *${formatLiters(remaining)} L*`,
         `Total Orders: ${totalOrders}`,
         ``,
-        `*Unit-wise Liter Status:*`,
+        `*Unit-wise Status:*`,
         ...(unitLines.length > 0 ? unitLines : ["No units found."]),
         ``,
-        `©️ SSF Pulikkal Division`,
+        `©️ ${sectorName}`,
     ].join("\n");
 }
 
@@ -247,23 +243,16 @@ export function buildDivisionAnalysisText(params: {
     const remaining = roundLiters(Math.max(0, totalTarget - totalAchieved));
     const pct = totalTarget > 0 ? Math.round((totalAchieved / totalTarget) * 100) : 0;
 
-    const sectorLines = sectors.map((s, idx) => {
-        const sPct = s.targetLiters > 0 ? Math.round((s.achievedLiters / s.targetLiters) * 100) : 0;
-        const targetPart =
-            s.targetLiters > 0 ? ` / ${formatLiters(s.targetLiters)} L (${sPct}%)` : "";
-        return `${idx + 1}. ${s.name}: *${formatLiters(s.achievedLiters)} L*${targetPart} (${
-            s.ordersCount
-        } orders)`;
-    });
+    const sectorLines = sectors.map(
+        (s, idx) => `${idx + 1}. ${s.name}: *${formatLiters(s.achievedLiters)} L*`
+    );
 
     return [
-        `*Payasam Challenge - Division Status*`,
-        `*SSF Pulikkal Division*`,
+        `*Payasam Challenge - Analysis*`,
         ``,
-        `Division Target: *${formatLiters(totalTarget)} L*`,
-        `Total Achieved: *${formatLiters(totalAchieved)} L*${totalTarget > 0 ? ` (${pct}%)` : ""}`,
+        `Target: *${formatLiters(totalTarget)} L*`,
+        `Achieved: *${formatLiters(totalAchieved)} L*${totalTarget > 0 ? ` (${pct}%)` : ""}`,
         `Remaining: *${formatLiters(remaining)} L*`,
-        `Paid: ${formatLiters(paidLiters)} L | Pending: ${formatLiters(pendingLiters)} L`,
         `Total Orders: ${totalOrders}`,
         ``,
         `*Sector-wise Status:*`,

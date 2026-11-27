@@ -27,6 +27,7 @@ import {
 import { cn } from "@/lib/utils";
 import {
     buildSectorAnalysisText,
+    buildDivisionAnalysisText,
     buildUnitNamesAndLitersText,
     buildWhatsAppShareUrl,
     calculatePayasamAmount,
@@ -154,7 +155,7 @@ export default function PortalPayasamChallengePage() {
     // Filter & Search
     const [searchQuery, setSearchQuery] = useState("");
     const [paymentFilter, setPaymentFilter] = useState<"ALL" | "PAID" | "PENDING">("ALL");
-    const [sectorTab, setSectorTab] = useState<"UNITS" | "ORDERS">("UNITS");
+    const [sectorTab, setSectorTab] = useState<"UNITS" | "ORDERS" | "SECTORS">("UNITS");
     const [handoverFilter, setHandoverFilter] = useState<
         "ALL" | "TO_SECTOR_PENDING" | "TO_DIVISION_PENDING" | "HANDED_DIVISION"
     >("ALL");
@@ -902,15 +903,30 @@ export default function PortalPayasamChallengePage() {
     // =========================================================================
     // SECTOR / DIVISION PORTAL VIEW
     // =========================================================================
-    const sectorAnalysisText = buildSectorAnalysisText({
-        sectorName: data.entity.name,
-        targetLiters: data.summary.targetLiters,
-        achievedLiters: data.summary.totalLiters,
-        paidLiters: data.summary.paidLiters,
-        pendingLiters: data.summary.pendingLiters,
-        totalOrders: data.summary.totalOrders,
-        units: data.unitBreakdown,
-    });
+    const sectorAnalysisText =
+        data.entityType === "DIVISION"
+            ? buildDivisionAnalysisText({
+                  totalTarget: data.summary.targetLiters,
+                  totalAchieved: data.summary.totalLiters,
+                  paidLiters: data.summary.paidLiters,
+                  pendingLiters: data.summary.pendingLiters,
+                  totalOrders: data.summary.totalOrders,
+                  sectors: (data.sectorBreakdown || []).map((s) => ({
+                      name: s.sectorName,
+                      targetLiters: s.targetLiters,
+                      achievedLiters: s.achievedLiters,
+                      ordersCount: s.ordersCount,
+                  })),
+              })
+            : buildSectorAnalysisText({
+                  sectorName: data.entity.name,
+                  targetLiters: data.summary.targetLiters,
+                  achievedLiters: data.summary.totalLiters,
+                  paidLiters: data.summary.paidLiters,
+                  pendingLiters: data.summary.pendingLiters,
+                  totalOrders: data.summary.totalOrders,
+                  units: data.unitBreakdown,
+              });
 
     const selectedUnitIdsList = filteredSectorUnits
         .filter((u) => selectedUnitIds[u.unitId])
@@ -1064,7 +1080,25 @@ export default function PortalPayasamChallengePage() {
 
             {/* Tabs */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                <div className="inline-flex bg-white border border-gray-200 p-1 rounded-xl self-start">
+                <div className="inline-flex flex-wrap bg-white border border-gray-200 p-1 rounded-xl self-start">
+                    {data.entityType === "DIVISION" && (
+                        <button
+                            type="button"
+                            onClick={() => {
+                                setSectorTab("SECTORS");
+                                setSelectedOrderIds({});
+                                setSelectedUnitIds({});
+                            }}
+                            className={cn(
+                                "px-4 py-2 rounded-lg text-xs font-semibold transition-all cursor-pointer",
+                                sectorTab === "SECTORS"
+                                    ? "bg-emerald-700 text-white"
+                                    : "text-gray-600 hover:text-gray-900"
+                            )}
+                        >
+                            Sector-wise Status ({(data as any).sectorBreakdown?.length || 0})
+                        </button>
+                    )}
                     <button
                         type="button"
                         onClick={() => {
@@ -1188,6 +1222,43 @@ export default function PortalPayasamChallengePage() {
                         >
                             Mark Paid
                         </button>
+                    </div>
+                </div>
+            )}
+
+            {/* TAB 0: SECTOR-WISE STATUS (DIVISION ONLY) */}
+            {sectorTab === "SECTORS" && data.entityType === "DIVISION" && (
+                <div className="bg-white rounded-2xl border border-gray-200/80 shadow-2xs overflow-hidden">
+                    <div className="overflow-x-auto">
+                        <table className="w-full text-left border-collapse">
+                            <thead>
+                                <tr className="border-b border-gray-100 bg-gray-50/70 text-[11px] font-bold uppercase tracking-wider text-gray-500">
+                                    <th className="py-3.5 px-4">#</th>
+                                    <th className="py-3.5 px-4">Sector Name</th>
+                                    <th className="py-3.5 px-4">Target (L)</th>
+                                    <th className="py-3.5 px-4">Achieved (L)</th>
+                                    <th className="py-3.5 px-4">Orders</th>
+                                </tr>
+                            </thead>
+                            <tbody className="divide-y divide-gray-100 text-sm">
+                                {((data as any).sectorBreakdown || []).map((sec: any, idx: number) => (
+                                    <tr key={sec.sectorId} className="hover:bg-gray-50/70 transition-colors">
+                                        <td className="py-3.5 px-4 text-xs text-gray-400 font-semibold">{idx + 1}</td>
+                                        <td className="py-3.5 px-4 font-semibold text-gray-900">{sec.sectorName}</td>
+                                        <td className="py-3.5 px-4 text-gray-600 font-medium">{formatLiters(sec.targetLiters)} L</td>
+                                        <td className="py-3.5 px-4 font-bold text-emerald-700">{formatLiters(sec.achievedLiters)} L</td>
+                                        <td className="py-3.5 px-4 text-gray-600">{sec.ordersCount}</td>
+                                    </tr>
+                                ))}
+                                {(!(data as any).sectorBreakdown || (data as any).sectorBreakdown.length === 0) && (
+                                    <tr>
+                                        <td colSpan={5} className="py-10 text-center text-sm text-gray-400">
+                                            No sector data found.
+                                        </td>
+                                    </tr>
+                                )}
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             )}
