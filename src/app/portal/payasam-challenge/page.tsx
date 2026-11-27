@@ -145,7 +145,7 @@ interface SectorResponse {
 
 type PortalPayasamData = UnitResponse | SectorResponse;
 
-const LITER_PRESETS = [0.5, 1, 1.5, 2, 3, 5];
+const LITER_PRESETS = [1, 2, 3, 5];
 
 export default function PortalPayasamChallengePage() {
     const [data, setData] = useState<PortalPayasamData | null>(null);
