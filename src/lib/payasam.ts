@@ -214,7 +214,7 @@ export function buildSectorAnalysisText(params: {
         `*Unit-wise Status:*`,
         ...(unitLines.length > 0 ? unitLines : ["No units found."]),
         ``,
-        `©️ ${sectorName}`,
+        `©️ SSF ${sectorName} Sector`,
     ].join("\n");
 }
 
