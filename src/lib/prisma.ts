@@ -15,7 +15,7 @@ function getServerlessDatabaseUrl(): string | undefined {
   try {
     const url = new URL(rawUrl);
     if (!url.searchParams.has("connection_limit")) {
-      url.searchParams.set("connection_limit", "3");
+      url.searchParams.set("connection_limit", "1");
     }
     if (!url.searchParams.has("pool_timeout")) {
       url.searchParams.set("pool_timeout", "10");
