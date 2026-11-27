@@ -904,7 +904,7 @@ export default function PortalPayasamChallengePage() {
     // SECTOR / DIVISION PORTAL VIEW
     // =========================================================================
     const sectorAnalysisText =
-        data.entityType === "DIVISION"
+        data.entityType === "DIVISION" && sectorTab === "SECTORS"
             ? buildDivisionAnalysisText({
                   totalTarget: data.summary.targetLiters,
                   totalAchieved: data.summary.totalLiters,
